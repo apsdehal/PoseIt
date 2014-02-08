@@ -10,6 +10,9 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
     using System.Windows;
     using System.Windows.Media;
     using Microsoft.Kinect;
+    using xna = Microsoft.Xna.Framework;
+    using math = System.Math;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -70,6 +73,11 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// Active Kinect sensor
         /// </summary>
         private KinectSensor sensor;
+
+        ///<summary>
+        /// Variable for storing first Skeleton
+        ///</summary>
+        private Skeleton firstSkeleton, secondSkeleton;
 
         /// <summary>
         /// Drawing group for skeleton rendering output
@@ -370,6 +378,70 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                     this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
                 }
             }
+        }
+
+        private double getAngle(Skeleton skeleton, JointType type1, JointType type2, JointType type3)
+        {
+            xna.Vector3 cross, j1to2, j2to3;
+
+            Joint joint1 = skeleton.Joints[type1];
+            Joint joint2 = skeleton.Joints[type1];
+            Joint joint3 = skeleton.Joints[type1];
+
+            j1to2 = new xna.Vector3(joint1.Position.X - joint2.Position.Y, joint1.Position.Y - joint2.Position.Y, joint1.Position.Z - joint2.Position.Z);
+            j2to3 = new xna.Vector3(joint2.Position.X - joint3.Position.Y, joint2.Position.Y - joint3.Position.Y, joint2.Position.Z - joint3.Position.Z);
+
+            j1to2.Normalize();
+            j2to3.Normalize();
+
+            double dot = xna.Vector3.Dot(j1to2, j2to3);
+
+            cross = xna.Vector3.Cross(j1to2, j2to3);
+            double crosslength = cross.Length();
+
+            double angle = math.Atan2(crosslength, dot);
+            angle = angle * (180 / math.PI);
+
+            angle = math.Round(angle, 2);
+
+            return angle;
+        }
+
+        private List<double> getAnglesFromSkeleton(Skeleton skeleton)
+        {
+            List<double> Angles = new List<double>();
+            Angles.Add(this.getAngle(skeleton, JointType.Head, JointType.ShoulderCenter, JointType.ShoulderRight));
+            Angles.Add(this.getAngle(skeleton, JointType.ShoulderCenter, JointType.ShoulderRight, JointType.ElbowRight));
+            Angles.Add(this.getAngle(skeleton, JointType.ShoulderRight, JointType.ElbowRight, JointType.WristRight ));
+            Angles.Add(this.getAngle(skeleton, JointType.ElbowRight, JointType.WristRight, JointType.HandRight));
+            Angles.Add(this.getAngle(skeleton, JointType.Head, JointType.ShoulderCenter, JointType.ShoulderLeft));
+            Angles.Add(this.getAngle(skeleton, JointType.ShoulderCenter, JointType.ShoulderLeft, JointType.ElbowLeft));
+            Angles.Add(this.getAngle(skeleton, JointType.ShoulderLeft, JointType.ElbowLeft, JointType.WristLeft));
+            Angles.Add(this.getAngle(skeleton, JointType.ElbowLeft, JointType.WristLeft, JointType.HandLeft ));
+            Angles.Add(this.getAngle(skeleton, JointType.HipCenter, JointType.HipRight, JointType.KneeRight));
+            Angles.Add(this.getAngle(skeleton, JointType.HipRight, JointType.KneeRight, JointType.AnkleRight));
+            Angles.Add(this.getAngle(skeleton, JointType.HipCenter, JointType.HipLeft, JointType.KneeLeft));
+            Angles.Add(this.getAngle(skeleton, JointType.HipLeft, JointType.KneeLeft, JointType.AnkleLeft));
+
+            return Angles;
+        }
+
+        private List<bool> getAngleDifference( List<double> angles1, List<double> angles2)
+        {
+            List<bool> Results = new List<bool>();
+            int i = 0;
+            for (i = 0; i < 12; i++)
+            {
+                if (math.Abs(angles1[i] - angles2[i]) > 20)
+                {
+                    Results.Add(true);
+                }
+                else
+                {
+                    Results.Add(false);
+                }
+            }
+            return Results;
         }
     }
 }
