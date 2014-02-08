@@ -80,6 +80,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// </summary>
         private KinectSensor sensor;
 
+        private bool startComparing; 
+
 
         ///<summary>
         /// Variable for storing first Skeleton
@@ -154,6 +156,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// <param name="e">event arguments</param>
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
+            this.startComparing = false;
             // Create the drawing group we'll use for drawing
             this.drawingGroup = new DrawingGroup();
 
@@ -235,7 +238,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                     skeletonFrame.CopySkeletonDataTo(this.currentSkeletons);
                 }
             }
-
+            
             using (DrawingContext dc = this.drawingGroup.Open())
             {
                 // Draw a transparent background to set the render size
@@ -250,6 +253,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                         if (skel.TrackingState == SkeletonTrackingState.Tracked)
                         {
                             this.DrawBonesAndJoints(skel, dc);
+                            this.checkResults(skel, dc, getAngleDifference(getAnglesFromSkeleton(skel), getAnglesFromSkeleton(this.firstSkeleton)));
                         }
                         else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
                         {
@@ -561,8 +565,11 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                     }
 
                 }
+
+                this.firstSkeleton = first;
+                this.initialPose.Visibility = Visibility.Hidden;
+                this.startComparing = true;
             }
-            this.firstSkeleton = first;
         }
    }
 }

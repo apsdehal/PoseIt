@@ -67,6 +67,6 @@
                 <TextBlock Name="statusBarText" Margin="-1 0 0 0">Click 'Seated' to change skeletal pipeline type!</TextBlock>
             </StatusBarItem>
         </StatusBar>
-        <Button x:Name="initialPose" Content="Challenge Pose" HorizontalAlignment="Left" Margin="592,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="114" Cursor="Hand" ToolTip="Press this button to Take Challenge Pose" Click="takeInitialPose"/>
+        <Button x:Name="initialPose" Content="Challenge Pose" HorizontalAlignment="Left" Margin="592,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="114" Cursor="Hand" ToolTip="Press this button to Take Challenge Pose" Click="GetFirstSkeleton"/>
     </Grid>
 </Window>
