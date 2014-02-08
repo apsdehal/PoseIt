@@ -1,0 +1,12 @@
+C:\Users\apsdehal\Desktop\PoseIt\bin\x86\Debug\SkeletonBasics-WPF.exe
+C:\Users\apsdehal\Desktop\PoseIt\bin\x86\Debug\SkeletonBasics-WPF.pdb
+C:\Users\apsdehal\Desktop\PoseIt\obj\x86\Debug\SkeletonBasics-WPF.csprojResolveAssemblyReference.cache
+C:\Users\apsdehal\Desktop\PoseIt\obj\x86\Debug\MainWindow.baml
+C:\Users\apsdehal\Desktop\PoseIt\obj\x86\Debug\MainWindow.g.cs
+C:\Users\apsdehal\Desktop\PoseIt\obj\x86\Debug\App.g.cs
+C:\Users\apsdehal\Desktop\PoseIt\obj\x86\Debug\SkeletonBasics-WPF_MarkupCompile.cache
+C:\Users\apsdehal\Desktop\PoseIt\obj\x86\Debug\SkeletonBasics-WPF.g.resources
+C:\Users\apsdehal\Desktop\PoseIt\obj\x86\Debug\Microsoft.Samples.Kinect.SkeletonBasics.Properties.Resources.resources
+C:\Users\apsdehal\Desktop\PoseIt\obj\x86\Debug\SkeletonBasics-WPF.csproj.GenerateResource.Cache
+C:\Users\apsdehal\Desktop\PoseIt\obj\x86\Debug\SkeletonBasics-WPF.exe
+C:\Users\apsdehal\Desktop\PoseIt\obj\x86\Debug\SkeletonBasics-WPF.pdb

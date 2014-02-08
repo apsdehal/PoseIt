@@ -13,6 +13,9 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
     using xna = Microsoft.Xna.Framework;
     using math = System.Math;
     using System.Collections.Generic;
+    using System.Data;
+    using System.Text;
+    using System.Linq;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -189,6 +192,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
                 this.initialPose.Click += GetFirstSkeleton;
 
+                this.finalPose.Click += this.GetFinalPose;
+
                 // Start the sensor!
                 try
                 {
@@ -254,10 +259,9 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                         if (skel.TrackingState == SkeletonTrackingState.Tracked)
                         {
                             this.DrawBonesAndJoints(skel, dc);
-                            if (this.startComparing)
+                            if (this.startComparing == true)
                             {
                                 this.checkResults(skel, dc, getAngleDifference(getAnglesFromSkeleton(skel), getAnglesFromSkeleton(this.firstSkeleton)));
-
                             }
                         }
                         else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
@@ -483,8 +487,12 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 if (results[i] == true)
                 {
                     JointType[] wrongJoints = this.retrieveWrongJoints(i);
-                    this.DrawBone(skeleton, drawingContext, wrongJoints[0], wrongJoints[1], this.incorrectBonePen);
-                    this.DrawBone(skeleton, drawingContext, wrongJoints[1], wrongJoints[2], this.incorrectBonePen);
+
+                    Console.WriteLine(skeleton.Joints[wrongJoints[0]].Position.Y);
+
+                    drawingContext.DrawLine(this.incorrectBonePen, this.SkeletonPointToScreen(skeleton.Joints[wrongJoints[0]].Position), this.SkeletonPointToScreen(skeleton.Joints[wrongJoints[1]].Position));
+
+                    drawingContext.DrawLine(this.incorrectBonePen, this.SkeletonPointToScreen(skeleton.Joints[wrongJoints[1]].Position), this.SkeletonPointToScreen(skeleton.Joints[wrongJoints[2]].Position));
                 }
             }
 
@@ -576,8 +584,12 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
                 this.firstSkeleton = first;
                 this.initialPose.Visibility = Visibility.Hidden;
-                this.startComparing = true;
             }
+        }
+
+        private void GetFinalPose(object sender, RoutedEventArgs e)
+        {
+            this.startComparing = true;
         }
    }
 }
