@@ -80,10 +80,13 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// </summary>
         private KinectSensor sensor;
 
+
         ///<summary>
         /// Variable for storing first Skeleton
         ///</summary>
-        private Skeleton firstSkeleton, secondSkeleton;
+        private Skeleton[] currentSkeletons = new Skeleton[0];
+
+        private Skeleton firstSkeleton;
 
         /// <summary>
         /// Drawing group for skeleton rendering output
@@ -179,7 +182,6 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
                 // Add an event handler to be called whenever there is new color frame data
                 this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
-
                 // Start the sensor!
                 try
                 {
@@ -540,9 +542,24 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             return joints;
         }
 
-        private void takeInitialPose(object sender, RoutedEventArgs e)
+        private void GetFirstSkeleton(SkeletonFrameReadyEventArgs e)
         {
-                
+            Skeleton first = null;
+            using (SkeletonFrame frame = e.OpenSkeletonFrame())
+            {
+                if (frame == null) return null;
+                frame.CopySkeletonDataTo(this.currentSkeletons);
+                foreach (Skeleton s in this.currentSkeletons)
+                {
+                    if (s.TrackingState == SkeletonTrackingState.Tracked)
+                    {
+                        first = s;
+                        break;
+                    }
+                }
+            }
+
+            this.firstSkeleton = first;
         }
     }
 }
