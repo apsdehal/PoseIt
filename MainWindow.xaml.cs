@@ -539,5 +539,10 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
             return joints;
         }
+
+        private void takeInitialPose(object sender, RoutedEventArgs e)
+        {
+                
+        }
     }
 }
