@@ -16,6 +16,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
     using System.Data;
     using System.Text;
     using System.Linq;
+    using System;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -439,12 +440,15 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
             angle = math.Round(angle, 2);
 
+            MessageBox.Show(angle.ToString);
+
             return angle;
         }
 
         private List<double> getAnglesFromSkeleton(Skeleton skeleton)
         {
             List<double> Angles = new List<double>();
+            Console.WriteLine(this.getAngle(skeleton, JointType.Head, JointType.ShoulderCenter, JointType.ShoulderRight));
             Angles.Add(this.getAngle(skeleton, JointType.Head, JointType.ShoulderCenter, JointType.ShoulderRight));
             Angles.Add(this.getAngle(skeleton, JointType.ShoulderCenter, JointType.ShoulderRight, JointType.ElbowRight));
             Angles.Add(this.getAngle(skeleton, JointType.ShoulderRight, JointType.ElbowRight, JointType.WristRight ));
@@ -467,13 +471,15 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             int i = 0;
             for (i = 0; i < 12; i++)
             {
-                if (math.Abs(angles1[i] - angles2[i]) > 20)
+                if (math.Abs(angles1[i] - angles2[i]) < 20)
                 {
-                    Results.Add(true);
+                    Console.WriteLine(math.Abs(angles1[i]-angles2[i]));
+                    Results.Add(false);
                 }
                 else
                 {
-                    Results.Add(false);
+                    Console.WriteLine("No");
+                    Results.Add(true);
                 }
             }
             return Results;
@@ -488,11 +494,15 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 {
                     JointType[] wrongJoints = this.retrieveWrongJoints(i);
 
-                    Console.WriteLine(skeleton.Joints[wrongJoints[0]].Position.Y);
+                    Console.WriteLine("Yes");
 
                     drawingContext.DrawLine(this.incorrectBonePen, this.SkeletonPointToScreen(skeleton.Joints[wrongJoints[0]].Position), this.SkeletonPointToScreen(skeleton.Joints[wrongJoints[1]].Position));
 
                     drawingContext.DrawLine(this.incorrectBonePen, this.SkeletonPointToScreen(skeleton.Joints[wrongJoints[1]].Position), this.SkeletonPointToScreen(skeleton.Joints[wrongJoints[2]].Position));
+                }
+                else
+                {
+                    Console.WriteLine("false");
                 }
             }
 
