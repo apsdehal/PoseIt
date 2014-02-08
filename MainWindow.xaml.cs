@@ -98,6 +98,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// </summary>
         private DrawingImage imageSource;
 
+        private SkeletonFrameReadyEventArgs args;
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
@@ -182,6 +183,9 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
                 // Add an event handler to be called whenever there is new color frame data
                 this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
+
+                this.initialPose.Click += GetFirstSkeleton;
+
                 // Start the sensor!
                 try
                 {
@@ -218,7 +222,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// <param name="sender">object sending the event</param>
         /// <param name="e">event arguments</param>
         private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
-        {
+        {   
+            this.args = e;
             Skeleton[] skeletons = new Skeleton[0];
 
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
@@ -227,6 +232,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 {
                     skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
                     skeletonFrame.CopySkeletonDataTo(skeletons);
+                    skeletonFrame.CopySkeletonDataTo(this.currentSkeletons);
                 }
             }
 
@@ -542,24 +548,21 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             return joints;
         }
 
-        private void GetFirstSkeleton(SkeletonFrameReadyEventArgs e)
+        private void GetFirstSkeleton(object sender, RoutedEventArgs e)
         {
             Skeleton first = null;
-            using (SkeletonFrame frame = e.OpenSkeletonFrame())
+            if (this.currentSkeletons != null)
             {
-                if (frame == null) return null;
-                frame.CopySkeletonDataTo(this.currentSkeletons);
                 foreach (Skeleton s in this.currentSkeletons)
                 {
                     if (s.TrackingState == SkeletonTrackingState.Tracked)
                     {
                         first = s;
-                        break;
                     }
+
                 }
             }
-
             this.firstSkeleton = first;
         }
-    }
+   }
 }
