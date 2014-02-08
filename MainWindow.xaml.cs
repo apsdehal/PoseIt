@@ -233,6 +233,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             {
                 if (skeletonFrame != null)
                 {
+                    this.currentSkeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
                     skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
                     skeletonFrame.CopySkeletonDataTo(skeletons);
                     skeletonFrame.CopySkeletonDataTo(this.currentSkeletons);
@@ -253,7 +254,11 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                         if (skel.TrackingState == SkeletonTrackingState.Tracked)
                         {
                             this.DrawBonesAndJoints(skel, dc);
-                            this.checkResults(skel, dc, getAngleDifference(getAnglesFromSkeleton(skel), getAnglesFromSkeleton(this.firstSkeleton)));
+                            if (this.startComparing)
+                            {
+                                this.checkResults(skel, dc, getAngleDifference(getAnglesFromSkeleton(skel), getAnglesFromSkeleton(this.firstSkeleton)));
+
+                            }
                         }
                         else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
                         {
@@ -265,6 +270,9 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                             BodyCenterThickness);
                         }
                     }
+                
+
+
                 }
 
                 // prevent drawing outside of our render area
