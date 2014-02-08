@@ -69,6 +69,12 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// </summary>        
         private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1);
 
+        private readonly Pen correctBonePen = new Pen(Brushes.Green, 6);
+
+        private readonly Pen incorrectBonePen = new Pen(Brushes.Red, 6);
+
+        private readonly Pen readingBonePen = new Pen(Brushes.Yellow, 6);
+       
         /// <summary>
         /// Active Kinect sensor
         /// </summary>
@@ -331,7 +337,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// <param name="drawingContext">drawing context to draw to</param>
         /// <param name="jointType0">joint to start drawing from</param>
         /// <param name="jointType1">joint to end drawing at</param>
-        private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1)
+        private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1, Pen passedPen = null )
         {
             Joint joint0 = skeleton.Joints[jointType0];
             Joint joint1 = skeleton.Joints[jointType1];
@@ -355,6 +361,11 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             if (joint0.TrackingState == JointTrackingState.Tracked && joint1.TrackingState == JointTrackingState.Tracked)
             {
                 drawPen = this.trackedBonePen;
+            }
+
+            if (passedPen != null)
+            {
+                drawPen = passedPen;
             }
 
             drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen(joint0.Position), this.SkeletonPointToScreen(joint1.Position));
@@ -442,6 +453,91 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 }
             }
             return Results;
+        }
+
+        private void checkResults(Skeleton skeleton, DrawingContext drawingContext, List<bool> results)
+        {
+            int i = 0;
+            for (i = 0; i < 12; i++)
+            {
+                if (results[i] == true)
+                {
+                    JointType[] wrongJoints = this.retrieveWrongJoints(i);
+                    this.DrawBone(skeleton, drawingContext, wrongJoints[0], wrongJoints[1], this.incorrectBonePen);
+                    this.DrawBone(skeleton, drawingContext, wrongJoints[1], wrongJoints[2], this.incorrectBonePen);
+                }
+            }
+
+        }
+
+        private JointType[] retrieveWrongJoints(int i)
+        {
+            JointType[] joints = new JointType[3];
+            switch (i)
+            {
+                case 0:
+                    joints[0] = JointType.Head;
+                    joints[1] = JointType.ShoulderCenter;
+                    joints[2] = JointType.ShoulderRight;
+                    break;
+                case 1:
+                    joints[0] = JointType.ShoulderCenter;
+                    joints[1] = JointType.ShoulderRight;
+                    joints[2] = JointType.ElbowRight;
+                    break;
+                case 2:
+                    joints[0] = JointType.ShoulderRight;
+                    joints[1] = JointType.ElbowRight;
+                    joints[2] = JointType.WristLeft;
+                    break;
+                case 3:
+                    joints[0] = JointType.ElbowRight;
+                    joints[1] = JointType.WristRight;
+                    joints[2] = JointType.HandRight;
+                    break;
+                case 4:
+                    joints[0] = JointType.Head;
+                    joints[1] = JointType.ShoulderCenter;
+                    joints[2] = JointType.ShoulderLeft;
+                    break;
+                case 5:
+                    joints[0] = JointType.ShoulderCenter;
+                    joints[1] = JointType.ShoulderLeft;
+                    joints[2] = JointType.ElbowLeft;
+                    break;
+                case 6:
+                    joints[0] = JointType.ShoulderLeft;
+                    joints[1] = JointType.ElbowLeft;
+                    joints[2] = JointType.WristLeft;
+                    break;
+                case 7:
+                    joints[0] = JointType.ElbowLeft;
+                    joints[1] = JointType.WristLeft;
+                    joints[2] = JointType.HandLeft;
+                    break;
+                case 8:
+                    joints[0] = JointType.HipCenter;
+                    joints[1] = JointType.HipRight;
+                    joints[2] = JointType.KneeRight;
+                    break;
+                case 9:
+                    joints[0] = JointType.HipRight;
+                    joints[1] = JointType.KneeRight;
+                    joints[2] = JointType.AnkleRight;
+                    break;
+                case 10:
+                    joints[0] = JointType.HipCenter;
+                    joints[1] = JointType.HipLeft;
+                    joints[2] = JointType.KneeLeft;
+                    break;
+                case 11:
+                    joints[0] = JointType.HipLeft;
+                    joints[1] = JointType.KneeLeft;
+                    joints[2] = JointType.AnkleLeft;
+                    break;
+                    
+            }
+            return joints;
         }
     }
 }
