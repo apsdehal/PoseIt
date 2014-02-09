@@ -191,9 +191,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 // Add an event handler to be called whenever there is new color frame data
                 this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
 
-                this.initialPose.Click += GetFirstSkeleton;
-
-                this.finalPose.Click += this.GetFinalPose;
+                this.initialPose.Click += this.GetFirstSkeleton;
 
                 // Start the sensor!
                 try
@@ -412,35 +410,47 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 else
                 {
                     this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
+
                 }
             }
         }
 
         private double getAngle(Skeleton skeleton, JointType type1, JointType type2, JointType type3)
         {
-            xna.Vector3 cross, j1to2, j2to3;
+            xna.Vector2 cross, j1to2, j2to3;
 
             Joint joint1 = skeleton.Joints[type1];
             Joint joint2 = skeleton.Joints[type1];
             Joint joint3 = skeleton.Joints[type1];
 
-            j1to2 = new xna.Vector3(joint1.Position.X - joint2.Position.Y, joint1.Position.Y - joint2.Position.Y, joint1.Position.Z - joint2.Position.Z);
-            j2to3 = new xna.Vector3(joint2.Position.X - joint3.Position.Y, joint2.Position.Y - joint3.Position.Y, joint2.Position.Z - joint3.Position.Z);
+            //j1to2 = new xna.Vector3(joint1.Position.X - joint2.Position.X, joint1.Position.Y - joint2.Position.Y, joint1.Position.Z - joint2.Position.Z);
+            //j2to3 = new xna.Vector3(joint2.Position.X - joint3.Position.X, joint2.Position.Y - joint3.Position.Y, joint2.Position.Z - joint3.Position.Z);
+
+            //j1to2.Normalize();
+            //j2to3.Normalize();
+
+            //double dot = xna.Vector3.Dot(j1to2, j2to3);
+
+            //cross = xna.Vector3.Cross(j1to2, j2to3);
+            //double crosslength = cross.Length();
+
+            //double angle = math.Atan2(crosslength, dot);
+            //angle = angle * (180 / math.PI);
+
+            //angle = math.Round(angle, 2);
+
+            j1to2 = new xna.Vector2(joint1.Position.X - joint2.Position.X, joint1.Position.Y - joint2.Position.Y);
+            j2to3 = new xna.Vector2(joint2.Position.X - joint3.Position.X, joint2.Position.Y - joint3.Position.Y);
 
             j1to2.Normalize();
             j2to3.Normalize();
 
-            double dot = xna.Vector3.Dot(j1to2, j2to3);
+            double dot = xna.Vector2.Dot(j1to2, j2to3);
 
-            cross = xna.Vector3.Cross(j1to2, j2to3);
-            double crosslength = cross.Length();
-
-            double angle = math.Atan2(crosslength, dot);
+            double angle = math.Acos(dot);
             angle = angle * (180 / math.PI);
 
             angle = math.Round(angle, 2);
-
-            MessageBox.Show(angle.ToString);
 
             return angle;
         }
@@ -448,7 +458,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         private List<double> getAnglesFromSkeleton(Skeleton skeleton)
         {
             List<double> Angles = new List<double>();
-            Console.WriteLine(this.getAngle(skeleton, JointType.Head, JointType.ShoulderCenter, JointType.ShoulderRight));
+           /// Console.WriteLine(this.getAngle(skeleton, JointType.Head, JointType.ShoulderCenter, JointType.ShoulderRight));
             Angles.Add(this.getAngle(skeleton, JointType.Head, JointType.ShoulderCenter, JointType.ShoulderRight));
             Angles.Add(this.getAngle(skeleton, JointType.ShoulderCenter, JointType.ShoulderRight, JointType.ElbowRight));
             Angles.Add(this.getAngle(skeleton, JointType.ShoulderRight, JointType.ElbowRight, JointType.WristRight ));
@@ -473,11 +483,13 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             {
                 if (math.Abs(angles1[i] - angles2[i]) < 20)
                 {
-                    Console.WriteLine(math.Abs(angles1[i]-angles2[i]));
+                    //Console.WriteLine(angles1[i].ToString("f0"));
+                    Console.WriteLine("Yes");
                     Results.Add(false);
                 }
                 else
                 {
+                    //Console.WriteLine(angles1[i].ToString("f0"));
                     Console.WriteLine("No");
                     Results.Add(true);
                 }
@@ -494,7 +506,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 {
                     JointType[] wrongJoints = this.retrieveWrongJoints(i);
 
-                    Console.WriteLine("Yes");
+                    ///Console.WriteLine("Yes");
 
                     drawingContext.DrawLine(this.incorrectBonePen, this.SkeletonPointToScreen(skeleton.Joints[wrongJoints[0]].Position), this.SkeletonPointToScreen(skeleton.Joints[wrongJoints[1]].Position));
 
@@ -502,7 +514,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 }
                 else
                 {
-                    Console.WriteLine("false");
+                 //   Console.WriteLine("false");
                 }
             }
 
