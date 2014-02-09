@@ -417,40 +417,40 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
         private double getAngle(Skeleton skeleton, JointType type1, JointType type2, JointType type3)
         {
-            xna.Vector2 cross, j1to2, j2to3;
+            xna.Vector3 cross, j1to2, j2to3;
 
             Joint joint1 = skeleton.Joints[type1];
             Joint joint2 = skeleton.Joints[type1];
             Joint joint3 = skeleton.Joints[type1];
 
-            //j1to2 = new xna.Vector3(joint1.Position.X - joint2.Position.X, joint1.Position.Y - joint2.Position.Y, joint1.Position.Z - joint2.Position.Z);
-            //j2to3 = new xna.Vector3(joint2.Position.X - joint3.Position.X, joint2.Position.Y - joint3.Position.Y, joint2.Position.Z - joint3.Position.Z);
-
-            //j1to2.Normalize();
-            //j2to3.Normalize();
-
-            //double dot = xna.Vector3.Dot(j1to2, j2to3);
-
-            //cross = xna.Vector3.Cross(j1to2, j2to3);
-            //double crosslength = cross.Length();
-
-            //double angle = math.Atan2(crosslength, dot);
-            //angle = angle * (180 / math.PI);
-
-            //angle = math.Round(angle, 2);
-
-            j1to2 = new xna.Vector2(joint1.Position.X - joint2.Position.X, joint1.Position.Y - joint2.Position.Y);
-            j2to3 = new xna.Vector2(joint2.Position.X - joint3.Position.X, joint2.Position.Y - joint3.Position.Y);
+            j1to2 = new xna.Vector3(joint1.Position.X - joint2.Position.X, joint1.Position.Y - joint2.Position.Y, joint1.Position.Z - joint2.Position.Z);
+            j2to3 = new xna.Vector3(joint3.Position.X - joint2.Position.X, joint3.Position.Y - joint2.Position.Y, joint3.Position.Z - joint2.Position.Z);
 
             j1to2.Normalize();
             j2to3.Normalize();
 
-            double dot = xna.Vector2.Dot(j1to2, j2to3);
+            double dot = xna.Vector3.Dot(j1to2, j2to3);
 
-            double angle = math.Acos(dot);
+            cross = xna.Vector3.Cross(j1to2, j2to3);
+            double crosslength = cross.Length();
+
+            double angle = math.Atan2(crosslength, dot);
             angle = angle * (180 / math.PI);
 
             angle = math.Round(angle, 2);
+
+            //j1to2 = new xna.Vector2(joint1.Position.X - joint2.Position.X, joint1.Position.Y - joint2.Position.Y);
+            //j2to3 = new xna.Vector2(joint2.Position.X - joint3.Position.X, joint2.Position.Y - joint3.Position.Y);
+
+            //j1to2.Normalize();
+            //j2to3.Normalize();
+
+            //double dot = xna.Vector2.Dot(j1to2, j2to3);
+
+            //double angle = math.Acos(dot);
+            //angle = angle * (180 / math.PI);
+
+            //angle = math.Round(angle, 2);
 
             return angle;
         }
